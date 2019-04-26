@@ -1,5 +1,6 @@
 #!usr/bin/python3
-from time import time
+from time import ctime
+
 
 class Ticket:
 
@@ -17,6 +18,9 @@ class Ticket:
             return self.expensive_price
         elif argument == "R":
             return self.cheap_price
+        else:
+            print("Wrong ticket type")
+            exit()
 
     def validate_zones(self, zones):
         if self.zones == "*":
@@ -46,7 +50,7 @@ class Ticket:
         nebo před nástupem do vlaku
         
         Vráceno: {} Kč
-        """.format(time(), self.price, self.type, self.minutes, self.zones, self.return_money)
+        """.format(ctime(), self.price, self.type, self.minutes, self.zones, self.return_money)
 
 
 class Automat:
@@ -68,6 +72,7 @@ class Automat:
         # self.tickets.append(Ticket(86400, [100, 101], 22, 90))
 
     def choose_ticket(self, time, zones, type):
+        """Getting only tickets that has wanted time, and zones"""
         tickets = []
         for ticket in self.tickets:
             if ticket.validate_time(time):
@@ -76,25 +81,33 @@ class Automat:
         return tickets
 
     def run(self):
-        time = int(input("Select time in minutes: "))
-        zones = int(input("select number of zones: "))
-        type = input("Standard [Z]/ cheap [R]: ")
+        try:
+            time = int(input("Select time in minutes: "))
+            zones = int(input("select number of zones: "))
+            type = input("Standard [Z]/ cheap [R]: ")
+        except ValueError:
+            print("Some values are not numbers")
+            exit()
         tickets = self.choose_ticket(time, zones, type)
         ticket = tickets[0]
         ticket.price = ticket.get_price(type)
-        ticket.type =  "Základní" if type == "Z" else "Zlevěná"
+        ticket.type = "Základní" if type == "Z" else "Zlevěná"
         coins = [1, 2, 5, 10, 20, 50]
         money = 0
-        while money <= ticket.price:
-            tmp = int(input("throw money: "))
-            if tmp in coins:
-                money += tmp
-            else:
-                print("coin doesn't exist")
+        while money <= ticket.price:  # Runs before the user pays enough for ticket
+            try:
+                tmp = int(input("throw money: "))
+                if tmp in coins:
+                    money += tmp
+                else:
+                    print("coin doesn't exist")
+            except ValueError:
+                print("Not a number")
+
         if money > ticket.price:
             ticket.return_money = money - ticket.price
 
-        print(ticket)
+        print(ticket)  # Calls __str__() method of ticket
 
 
 aut = Automat()

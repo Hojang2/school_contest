@@ -12,8 +12,12 @@ def main(bug, program):
 
 
 if __name__ == "__main__":
-    with open(input("Select file: "), "r") as file:
-        f = file.readlines()
-        tmp = main(f[0].replace("\n", ""), f[1].replace("\n", ""))
+    try:
+        with open(input("Select file: "), "r") as file:
+            f = file.readlines()
+            tmp = main(f[0].replace("\n", ""), f[1].replace("\n", ""))
+    except FileNotFoundError:
+        print("File not exist")
+        exit()
     with open("vysledek.txt", "w") as file:
         file.write(tmp)
