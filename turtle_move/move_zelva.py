@@ -2,7 +2,7 @@
 
 
 def main(length, commands):
-    assert len(commands) <= 1000000, "There are too many commands"
+    assert len(commands) <= 1000000 and int(length) <= 1000000, "There are too many commands"
     x, y = 0, 0
     for i in range(int(length)):
         if commands[i] == "S":
